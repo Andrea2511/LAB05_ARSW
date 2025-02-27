@@ -64,4 +64,17 @@ public class BlueprintsServices {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Updates an existing blueprint
+     *
+     * @param bp the blueprint with the updated information
+     * @param author the author of the blueprint
+     * @param name the name of the blueprint
+     * @throws BlueprintNotFoundException if the blueprint with the given author
+     * and name does not exist
+     */
+    public void updateBlueprint(Blueprint bp) throws BlueprintNotFoundException {
+        bpp.updateBlueprint(bp);
+    }
+
 }

@@ -5,17 +5,18 @@
  */
 package edu.eci.arsw.blueprints.persistence.impl;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.stereotype.Service;
+
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
-import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -105,6 +106,15 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
             }
         }
         return allBlueprints;
+    }
+
+    @Override
+    public void updateBlueprint(Blueprint bp) throws BlueprintNotFoundException {
+        Blueprint old = blueprints.replace(new Tuple<>(bp.getAuthor(), bp.getName()), bp);
+        if (old == null) {
+            throw new BlueprintNotFoundException("The given blueprint does not exist: " + bp);
+        }
+        
     }
 
 

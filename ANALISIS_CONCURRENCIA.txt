@@ -1,0 +1,24 @@
+Condiciones de Carrera Potenciales
+
+Lectura y escritura simultánea: Si múltiples hilos intentan leer y modificar el mismo plano al mismo tiempo.
+
+Verificación de existencia y posterior creación: Al añadir un nuevo plano, existe una condición de carrera si un hilo verifica que un plano no existe y antes de agregarlo, otro hilo agrega un plano con el mismo autor y nombre.
+
+Actualizaciones concurrentes: Si dos o más hilos intentan actualizar el mismo plano simultáneamente, puede resultar en una actualización perdida donde solo prevalece la última.
+
+Eliminación mientras se lee: Si un plano es eliminado mientras otro hilo está intentando leerlo.
+
+Regiones Críticas
+
+- La colección blueprints en InMemoryBlueprintPersistence que almacena todos los planos.
+- Los métodos que modifican esta colección: saveBlueprint, updateBlueprint, etc.
+- Los métodos que verifican y luego actúan, como verificar si un plano existe antes de crearlo o actualizarlo.
+
+Solución Implementada
+
+Para resolver estos problemas, he aplicado las siguientes soluciones:
+
+1. **Reemplazo de HashMap por ConcurrentHashMap:**
+   - ConcurrentHashMap está diseñado específicamente para operaciones concurrentes
+   - Proporciona mejor rendimiento que un HashMap sincronizado
+   - Permite múltiples lecturas simultáneas y bloqueos a nivel de segmento para escrituras

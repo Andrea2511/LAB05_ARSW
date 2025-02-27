@@ -1,22 +1,24 @@
 package edu.eci.arsw.blueprints.persistence.impl;
 
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.stereotype.Service;
+
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
-import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 @Service("anotherBlueprintsPersistence")
 public class AnotherBlueprintsPersistence implements BlueprintsPersistence {
 
-    private final Map<Tuple<String,String>, Blueprint> blueprints=new HashMap<>();
+    private final Map<Tuple<String,String>, Blueprint> blueprints=new ConcurrentHashMap<>();
 
     public AnotherBlueprintsPersistence() {
         //load stub data
@@ -89,5 +91,13 @@ public class AnotherBlueprintsPersistence implements BlueprintsPersistence {
             }
         }
         return allBlueprints;
+    }
+
+    @Override
+    public void updateBlueprint(Blueprint bp) throws BlueprintNotFoundException {
+        Blueprint old = blueprints.replace(new Tuple<>(bp.getAuthor(), bp.getName()), bp);
+        if (old == null) {
+            throw new BlueprintNotFoundException("There is no blueprint with the given author and name");
+        }
     }
 }
